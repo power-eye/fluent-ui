@@ -191,7 +191,7 @@ class _WeekTimePickerState extends State<WeekTimePicker>
       time = widget.selected ?? DateTime.now();
       _weekdayController.jumpToItem(time.weekday - 1);
       _hourController.jumpToItem(() {
-        var hour = time.hour - 1;
+        var hour = time.hour;
         if (!widget.use24Format) {
           hour -= 12;
         }
@@ -215,7 +215,7 @@ class _WeekTimePickerState extends State<WeekTimePicker>
     );
     _hourController = FixedExtentScrollController(
       initialItem: () {
-        var hour = time.hour - 1;
+        var hour = time.hour;
         if (!widget.use24Format) {
           hour -= 12;
         }
