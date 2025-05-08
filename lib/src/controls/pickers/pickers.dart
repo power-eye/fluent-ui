@@ -16,6 +16,20 @@ const kPickerDiameterRatio = 100.0;
 /// The default popup height
 const double kPickerPopupHeight = kOneLineTileHeight * 10;
 
+/// The default max width
+const double kPickerMaxWidth = 296;
+
+TextStyle? kPickerTextStyle(BuildContext context, bool isEnabled) {
+  if (isEnabled) {
+    return null;
+  }
+  assert(debugCheckHasFluentTheme(context));
+  final theme = FluentTheme.of(context);
+  return theme.typography.body?.copyWith(
+    color: theme.resources.textOnAccentFillColorDisabled,
+  );
+}
+
 TextStyle? kPickerPopupTextStyle(BuildContext context, bool isSelected) {
   assert(debugCheckHasFluentTheme(context));
   final theme = FluentTheme.of(context);
@@ -314,11 +328,13 @@ class Picker extends StatefulWidget {
     required this.child,
     required this.pickerContent,
     required this.pickerHeight,
+    required this.isExpanded,
   });
 
   final PickerBuilder child;
   final WidgetBuilder pickerContent;
   final double pickerHeight;
+  final bool isExpanded;
 
   @override
   State<Picker> createState() => PickerState();
@@ -427,18 +443,20 @@ class PickerState extends State<Picker> {
   Widget build(BuildContext context) {
     assert(debugCheckHasFluentTheme(context));
     final theme = FluentTheme.of(context);
-
+    final child = DefaultTextStyle.merge(
+      style: TextStyle(
+        color: theme.resources.textFillColorPrimary,
+      ),
+      child: widget.child(context, open),
+    );
     return KeyedSubtree(
       key: _childKey,
-      child: ConstrainedBox(
-        constraints: const BoxConstraints(maxWidth: 296),
-        child: DefaultTextStyle.merge(
-          style: TextStyle(
-            color: theme.resources.textFillColorPrimary,
-          ),
-          child: widget.child(context, open),
-        ),
-      ),
+      child: widget.isExpanded
+          ? child
+          : ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 296),
+              child: child,
+            ),
     );
   }
 }

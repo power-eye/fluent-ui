@@ -32,6 +32,7 @@ Future<void> displayInfoBar(
   required InfoBarPopupBuilder builder,
   Alignment alignment = Alignment.bottomCenter,
   Duration duration = const Duration(seconds: 3),
+  VoidCallback? onCompleted,
 }) async {
   assert(debugCheckHasOverlay(context));
   assert(debugCheckHasFluentTheme(context));
@@ -55,6 +56,7 @@ Future<void> displayInfoBar(
           ),
           child: StatefulBuilder(builder: (context, setState) {
             void close() async {
+              onCompleted?.call();
               if (entry.mounted) setState(() => isFading = true);
 
               await Future.delayed(theme.mediumAnimationDuration);

@@ -58,6 +58,7 @@ class ContentDialog extends StatelessWidget {
     this.actions,
     this.style,
     this.constraints = kDefaultContentDialogConstraints,
+    this.direction = Axis.horizontal,
   });
 
   /// The title of the dialog. Usually, a [Text] widget
@@ -75,6 +76,8 @@ class ContentDialog extends StatelessWidget {
 
   /// The constraints of the dialog. It defaults to `BoxConstraints(maxWidth: 368)`
   final BoxConstraints constraints;
+
+  final Axis direction;
 
   @override
   Widget build(BuildContext context) {
@@ -121,7 +124,7 @@ class ContentDialog extends StatelessWidget {
                 ),
               ),
             ),
-            if (actions != null)
+            if (actions != null && direction == Axis.horizontal)
               Container(
                 decoration: style.actionsDecoration,
                 padding: style.actionsPadding,
@@ -153,6 +156,22 @@ class ContentDialog extends StatelessWidget {
                   }(),
                 ),
               ),
+            if (actions != null && direction == Axis.vertical)
+              ...actions!.map((e) {
+                final index = actions!.indexOf(e);
+                return Row(
+                  children: [
+                    Expanded(
+                      child: Padding(
+                        padding: index != (actions!.length - 1)
+                            ? const EdgeInsets.fromLTRB(16, 0, 16, 8)
+                            : const EdgeInsets.fromLTRB(16, 0, 16, 16),
+                        child: e,
+                      ),
+                    ),
+                  ],
+                );
+              }),
           ],
         ),
       ),

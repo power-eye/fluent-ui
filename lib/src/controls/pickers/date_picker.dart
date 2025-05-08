@@ -69,12 +69,16 @@ class DatePicker extends StatefulWidget {
     this.locale,
     this.fieldOrder,
     this.fieldFlex,
+    this.isExpanded = false,
+    this.enabled = true,
   })  : startDate = startDate ?? DateTime.now().subtract(kYearDuration * 100),
         endDate = endDate ?? DateTime.now().add(kYearDuration * 25),
         assert(
           fieldFlex == null || fieldFlex.length == 3,
           'fieldFlex must be null or have a length of 3',
         );
+
+  final bool enabled;
 
   /// The current date selected date.
   ///
@@ -137,6 +141,11 @@ class DatePicker extends StatefulWidget {
 
   /// {@macro flutter.widgets.Focus.autofocus}
   final bool autofocus;
+
+  /// Is the maximum width of picker fields.
+  ///
+  /// Defaults is false
+  final bool isExpanded;
 
   /// The height of the popup.
   ///
@@ -308,6 +317,7 @@ class DatePickerState extends State<DatePicker> {
 
     Widget picker = Picker(
       key: _pickerKey,
+      isExpanded: widget.isExpanded,
       pickerContent: (context) {
         return _DatePickerContentPopUp(
           date: date,
@@ -362,6 +372,8 @@ class DatePickerState extends State<DatePicker> {
                           .format(widget.selected!)
                           .uppercaseFirst(),
                   locale: locale,
+                  textAlign: TextAlign.center,
+                  style: kPickerTextStyle(context, widget.enabled),
                 ),
               ),
             )
@@ -379,6 +391,7 @@ class DatePickerState extends State<DatePicker> {
                         widget.selected!.day,
                       )),
                 textAlign: TextAlign.center,
+                style: kPickerTextStyle(context, widget.enabled),
               ),
             ),
           ];
@@ -393,6 +406,7 @@ class DatePickerState extends State<DatePicker> {
                         widget.selected!.year,
                       )),
                 textAlign: TextAlign.center,
+                style: kPickerTextStyle(context, widget.enabled),
               ),
             ),
           ];
