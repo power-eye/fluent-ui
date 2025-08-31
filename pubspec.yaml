@@ -12,7 +12,7 @@ environment:
 topics:
   - windows
   - desktop
-  - ui
+  - uis
   - widgets
 
 dependencies:
@@ -22,16 +22,16 @@ dependencies:
     sdk: flutter
 
   # Used on date and time pickers
-  intl: '>=0.20.2 <= 1.0.0'
+  intl: ^0.20.2
 
   # Used on TabView
-  scroll_pos: '>=0.5.0 < 1.0.0'
+  scroll_pos: ^0.5.0
 
   # Used on icon generator
   recase: ^4.1.0
 
   # Used on NumberBox
-  math_expressions: ^2.4.0
+  math_expressions: ^3.1.0
 
 dev_dependencies:
   flutter_test:
