@@ -20,13 +20,15 @@ String _formatMinute(int minute, String locale) {
   if (minute < 10) {
     return '0$minute';
   }
-  return DateFormat.m(locale).format(DateTime(
-    0, // year
-    0, // month
-    0, // day
-    0, // hour,
-    minute,
-  ));
+  return DateFormat.m(locale).format(
+    DateTime(
+      0, // year
+      0, // month
+      0, // day
+      0, // hour,
+      minute,
+    ),
+  );
 }
 
 /// The time picker gives you a standardized way to let users pick a time value
@@ -305,50 +307,52 @@ class TimePickerState extends State<TimePicker>
                     Expanded(
                       child: Padding(
                         padding: widget.contentPadding,
-                        child: Text(() {
-                          if (widget.selected == null) {
-                            return localizations.hour;
-                          }
-                          late int finalHour;
-                          var hour = time.hour;
-                          if (!widget.use24Format && hour > 12) {
-                            finalHour = hour - 12;
-                          } else {
-                            finalHour = hour;
-                          }
+                        child: Text(
+                          () {
+                            if (widget.selected == null) {
+                              return localizations.hour;
+                            }
+                            late int finalHour;
+                            var hour = time.hour;
+                            if (!widget.use24Format && hour > 12) {
+                              finalHour = hour - 12;
+                            } else {
+                              finalHour = hour;
+                            }
 
-                          return _formatHour(finalHour, locale!.toString());
-                        }(),
-                        textAlign: TextAlign.center,
-                        style: kPickerTextStyle(context, widget.enabled),
+                            return _formatHour(finalHour, locale!.toString());
+                          }(),
+                          textAlign: TextAlign.center,
+                          style: kPickerTextStyle(context, widget.enabled),
+                        ),
                       ),
                     ),
-                  ),
-                  divider,
-                  Expanded(
-                    child: Padding(
-                      padding: widget.contentPadding,
-                      child: Text(
-                        widget.selected == null
-                            ? localizations.minute
-                            : _formatMinute(time.minute, '$locale'),
-                        textAlign: TextAlign.center,
-                        style: kPickerTextStyle(context, widget.enabled),
-                      ),
-                    ),
-                  ),
-                  divider,
-                  if (!widget.use24Format)
+                    divider,
                     Expanded(
                       child: Padding(
                         padding: widget.contentPadding,
                         child: Text(
-                          () {
-                            if (_isPm) return localizations.pm;
-                            return localizations.am;
-                          }(),
+                          widget.selected == null
+                              ? localizations.minute
+                              : _formatMinute(time.minute, '$locale'),
                           textAlign: TextAlign.center,
                           style: kPickerTextStyle(context, widget.enabled),
+                        ),
+                      ),
+                    ),
+                    divider,
+                    if (!widget.use24Format)
+                      Expanded(
+                        child: Padding(
+                          padding: widget.contentPadding,
+                          child: Text(
+                            () {
+                              if (_isPm) return localizations.pm;
+                              return localizations.am;
+                            }(),
+                            textAlign: TextAlign.center,
+                            style: kPickerTextStyle(context, widget.enabled),
+                          ),
                         ),
                       ),
                   ],
