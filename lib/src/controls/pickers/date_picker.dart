@@ -47,6 +47,7 @@ enum DatePickerField {
 ///
 ///  * [TimePicker], which gives you a standardized way to let users pick a time
 ///    value
+///  * [CalendarView], which lets a user view and interact with a calendar
 ///  * <https://docs.microsoft.com/en-us/windows/apps/design/controls/date-picker>
 class DatePicker extends StatefulWidget {
   /// Creates a date picker.
@@ -71,12 +72,12 @@ class DatePicker extends StatefulWidget {
     this.fieldFlex,
     this.isExpanded = false,
     this.enabled = true,
-  })  : startDate = startDate ?? DateTime.now().subtract(kYearDuration * 100),
-        endDate = endDate ?? DateTime.now().add(kYearDuration * 25),
-        assert(
-          fieldFlex == null || fieldFlex.length == 3,
-          'fieldFlex must be null or have a length of 3',
-        );
+  }) : startDate = startDate ?? DateTime.now().subtract(kYearDuration * 100),
+       endDate = endDate ?? DateTime.now().add(kYearDuration * 25),
+       assert(
+         fieldFlex == null || fieldFlex.length == 3,
+         'fieldFlex must be null or have a length of 3',
+       );
 
   final bool enabled;
 
@@ -185,35 +186,37 @@ class DatePicker extends StatefulWidget {
     super.debugFillProperties(properties);
     properties
       ..add(DiagnosticsProperty<DateTime>('selected', selected, ifNull: 'now'))
-      ..add(FlagProperty(
-        'showMonth',
-        value: showMonth,
-        ifFalse: 'not displaying month',
-      ))
-      ..add(FlagProperty(
-        'showDay',
-        value: showDay,
-        ifFalse: 'not displaying day',
-      ))
-      ..add(FlagProperty(
-        'showYear',
-        value: showYear,
-        ifFalse: 'not displaying year',
-      ))
+      ..add(
+        FlagProperty(
+          'showMonth',
+          value: showMonth,
+          ifFalse: 'not displaying month',
+        ),
+      )
+      ..add(
+        FlagProperty('showDay', value: showDay, ifFalse: 'not displaying day'),
+      )
+      ..add(
+        FlagProperty(
+          'showYear',
+          value: showYear,
+          ifFalse: 'not displaying year',
+        ),
+      )
       ..add(DiagnosticsProperty<DateTime>('startDate', startDate))
       ..add(DiagnosticsProperty<DateTime>('endDate', endDate))
       ..add(DiagnosticsProperty('contentPadding', contentPadding))
       ..add(ObjectFlagProperty.has('focusNode', focusNode))
-      ..add(FlagProperty(
-        'autofocus',
-        value: autofocus,
-        ifFalse: 'manual focus',
-      ))
-      ..add(DoubleProperty(
-        'popupHeight',
-        popupHeight,
-        defaultValue: kPickerPopupHeight,
-      ))
+      ..add(
+        FlagProperty('autofocus', value: autofocus, ifFalse: 'manual focus'),
+      )
+      ..add(
+        DoubleProperty(
+          'popupHeight',
+          popupHeight,
+          defaultValue: kPickerPopupHeight,
+        ),
+      )
       ..add(DiagnosticsProperty<Locale>('locale', locale))
       ..add(IterableProperty<DatePickerField>('fieldOrder', fieldOrder));
   }
@@ -249,13 +252,13 @@ class DatePickerState extends State<DatePicker> {
       setState(() => date = DateTime.now());
     }
     _monthController = FixedExtentScrollController(
-      initialItem: _monthsInYear(date, widget.startDate, widget.endDate)
-          .toList()
-          .indexOf(date.month),
+      initialItem: _monthsInYear(
+        date,
+        widget.startDate,
+        widget.endDate,
+      ).toList().indexOf(date.month),
     );
-    _dayController = FixedExtentScrollController(
-      initialItem: date.day - 1,
-    );
+    _dayController = FixedExtentScrollController(initialItem: date.day - 1);
     _yearController = FixedExtentScrollController(
       initialItem: currentYear - startYear,
     );
@@ -367,15 +370,16 @@ class DatePickerState extends State<DatePicker> {
                 child: Text(
                   widget.selected == null
                       ? localizations.month
-                      : DateFormat(DateFormat.STANDALONE_MONTH, '$locale')
-                          .format(widget.selected!)
-                          .uppercaseFirst(),
+                      : DateFormat(
+                          DateFormat.STANDALONE_MONTH,
+                          '$locale',
+                        ).format(widget.selected!).uppercaseFirst(),
                   locale: locale,
                   textAlign: TextAlign.center,
                   style: kPickerTextStyle(context, widget.enabled),
                 ),
               ),
-            )
+            ),
           ];
 
           final dayWidget = [
@@ -384,11 +388,9 @@ class DatePickerState extends State<DatePicker> {
               child: Text(
                 widget.selected == null
                     ? localizations.day
-                    : DateFormat.d('$locale').format(DateTime(
-                        0,
-                        0,
-                        widget.selected!.day,
-                      )),
+                    : DateFormat.d(
+                        '$locale',
+                      ).format(DateTime(0, 0, widget.selected!.day)),
                 textAlign: TextAlign.center,
                 style: kPickerTextStyle(context, widget.enabled),
               ),
@@ -401,9 +403,9 @@ class DatePickerState extends State<DatePicker> {
               child: Text(
                 widget.selected == null
                     ? localizations.year
-                    : DateFormat.y('$locale').format(DateTime(
-                        widget.selected!.year,
-                      )),
+                    : DateFormat.y(
+                        '$locale',
+                      ).format(DateTime(widget.selected!.year)),
                 textAlign: TextAlign.center,
                 style: kPickerTextStyle(context, widget.enabled),
               ),
@@ -432,17 +434,20 @@ class DatePickerState extends State<DatePicker> {
                       : null,
                 ),
                 maxLines: 1,
-                child: Row(mainAxisSize: MainAxisSize.min, children: [
-                  ...fieldMap.elementAt(0) ?? [],
-                  if (fieldMap.elementAt(1) != null) ...[
-                    if (fieldMap.elementAt(0) != null) divider,
-                    ...fieldMap.elementAt(1)!,
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    ...fieldMap.elementAt(0) ?? [],
+                    if (fieldMap.elementAt(1) != null) ...[
+                      if (fieldMap.elementAt(0) != null) divider,
+                      ...fieldMap.elementAt(1)!,
+                    ],
+                    if (fieldMap.elementAt(2) != null) ...[
+                      divider,
+                      ...fieldMap.elementAt(2)!,
+                    ],
                   ],
-                  if (fieldMap.elementAt(2) != null) ...[
-                    divider,
-                    ...fieldMap.elementAt(2)!,
-                  ],
-                ]),
+                ),
               ),
             ),
           );
@@ -593,8 +598,9 @@ class __DatePickerContentPopUpState extends State<_DatePickerContentPopUp> {
               childDelegate: ListWheelChildLoopingListDelegate(
                 children: List.generate(months.length, (index) {
                   final month = months.elementAt(index);
-                  final text =
-                      formatter.format(DateTime(1, month)).uppercaseFirst();
+                  final text = formatter
+                      .format(DateTime(1, month))
+                      .uppercaseFirst();
                   final selected = month == localDate.month;
 
                   return ListTile(
@@ -622,16 +628,18 @@ class __DatePickerContentPopUpState extends State<_DatePickerContentPopUp> {
                 var day = localDate.day;
                 if (day > daysInMonth) day = daysInMonth;
 
-                handleDateChanged(DateTime(
-                  localDate.year,
-                  month,
-                  day,
-                  localDate.hour,
-                  localDate.minute,
-                  localDate.second,
-                  localDate.millisecond,
-                  localDate.microsecond,
-                ));
+                handleDateChanged(
+                  DateTime(
+                    localDate.year,
+                    month,
+                    day,
+                    localDate.hour,
+                    localDate.minute,
+                    localDate.second,
+                    localDate.millisecond,
+                    localDate.microsecond,
+                  ),
+                );
               },
             ),
           );
@@ -648,18 +656,10 @@ class __DatePickerContentPopUpState extends State<_DatePickerContentPopUp> {
           final formatter = DateFormat.d(locale.toString());
           return PickerNavigatorIndicator(
             onBackward: () {
-              widget.dayController.navigateSides(
-                context,
-                false,
-                daysInMonth,
-              );
+              widget.dayController.navigateSides(context, false, daysInMonth);
             },
             onForward: () {
-              widget.dayController.navigateSides(
-                context,
-                true,
-                daysInMonth,
-              );
+              widget.dayController.navigateSides(context, true, daysInMonth);
             },
             child: ListWheelScrollView.useDelegate(
               controller: widget.dayController,
@@ -686,11 +686,9 @@ class __DatePickerContentPopUpState extends State<_DatePickerContentPopUp> {
                     title: Center(
                       child: Text(
                         // '$day',
-                        formatter.format(DateTime(
-                          localDate.year,
-                          localDate.month,
-                          day,
-                        )),
+                        formatter.format(
+                          DateTime(localDate.year, localDate.month, day),
+                        ),
                         style: kPickerPopupTextStyle(context, selected),
                         textAlign: TextAlign.center,
                       ),
@@ -699,16 +697,18 @@ class __DatePickerContentPopUpState extends State<_DatePickerContentPopUp> {
                 }, growable: false),
               ),
               onSelectedItemChanged: (index) {
-                handleDateChanged(DateTime(
-                  localDate.year,
-                  localDate.month,
-                  index + 1,
-                  localDate.hour,
-                  localDate.minute,
-                  localDate.second,
-                  localDate.millisecond,
-                  localDate.microsecond,
-                ));
+                handleDateChanged(
+                  DateTime(
+                    localDate.year,
+                    localDate.month,
+                    index + 1,
+                    localDate.hour,
+                    localDate.minute,
+                    localDate.second,
+                    localDate.millisecond,
+                    localDate.microsecond,
+                  ),
+                );
               },
             ),
           );
@@ -725,18 +725,10 @@ class __DatePickerContentPopUpState extends State<_DatePickerContentPopUp> {
           // YEAR
           return PickerNavigatorIndicator(
             onBackward: () {
-              widget.yearController.navigateSides(
-                context,
-                false,
-                years,
-              );
+              widget.yearController.navigateSides(context, false, years);
             },
             onForward: () {
-              widget.yearController.navigateSides(
-                context,
-                true,
-                years,
-              );
+              widget.yearController.navigateSides(context, true, years);
             },
             child: ListWheelScrollView(
               controller: widget.yearController,
@@ -750,16 +742,18 @@ class __DatePickerContentPopUpState extends State<_DatePickerContentPopUp> {
                   month = monthsInCurrentYear.first;
                 }
 
-                handleDateChanged(DateTime(
-                  widget.startDate.year + index,
-                  month,
-                  localDate.day,
-                  localDate.hour,
-                  localDate.minute,
-                  localDate.second,
-                  localDate.millisecond,
-                  localDate.microsecond,
-                ));
+                handleDateChanged(
+                  DateTime(
+                    widget.startDate.year + index,
+                    month,
+                    localDate.day,
+                    localDate.hour,
+                    localDate.minute,
+                    localDate.second,
+                    localDate.millisecond,
+                    localDate.microsecond,
+                  ),
+                );
               },
               children: List.generate(years, (index) {
                 final realYear = widget.startDate.year + index;
@@ -799,31 +793,38 @@ class __DatePickerContentPopUpState extends State<_DatePickerContentPopUp> {
     return PickerDialog(
       onSelect: onSelect,
       onDismiss: onDismiss,
-      child: Column(children: [
-        Expanded(
-          child: Stack(children: [
-            const PickerHighlightTile(),
-            Row(mainAxisSize: MainAxisSize.min, children: [
-              ...fieldMap.elementAt(0) ?? [],
-              if (fieldMap.elementAt(1) != null) ...[
-                divider,
-                ...fieldMap.elementAt(1)!,
+      child: Column(
+        children: [
+          Expanded(
+            child: Stack(
+              children: [
+                const PickerHighlightTile(),
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    ...fieldMap.elementAt(0) ?? [],
+                    if (fieldMap.elementAt(1) != null) ...[
+                      divider,
+                      ...fieldMap.elementAt(1)!,
+                    ],
+                    if (fieldMap.elementAt(2) != null) ...[
+                      divider,
+                      ...fieldMap.elementAt(2)!,
+                    ],
+                  ],
+                ),
               ],
-              if (fieldMap.elementAt(2) != null) ...[
-                divider,
-                ...fieldMap.elementAt(2)!,
-              ],
-            ]),
-          ]),
-        ),
-        const Divider(
-          style: DividerThemeData(
-            verticalMargin: EdgeInsets.zero,
-            horizontalMargin: EdgeInsets.zero,
+            ),
           ),
-        ),
-        YesNoPickerControl(onChanged: onSelect, onCancel: onDismiss),
-      ]),
+          const Divider(
+            style: DividerThemeData(
+              verticalMargin: EdgeInsets.zero,
+              horizontalMargin: EdgeInsets.zero,
+            ),
+          ),
+          YesNoPickerControl(onChanged: onSelect, onCancel: onDismiss),
+        ],
+      ),
     );
   }
 }

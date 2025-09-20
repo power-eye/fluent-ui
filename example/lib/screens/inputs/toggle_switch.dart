@@ -38,14 +38,15 @@ class _ToggleSwitchPageState extends State<ToggleSwitchPage> with PageMixin {
 
 ToggleSwitch(
   checked: checked,
-  onPressed: disabled ? null : (v) => setState(() => checked = v),
+  onChanged: disabled ? null : (v) => setState(() => checked = v),
 )''',
           child: Align(
             alignment: AlignmentDirectional.centerStart,
             child: ToggleSwitch(
               checked: firstValue,
-              onChanged:
-                  disabled ? null : (v) => setState(() => firstValue = v),
+              onChanged: disabled
+                  ? null
+                  : (v) => setState(() => firstValue = v),
               content: Text(firstValue ? 'On' : 'Off'),
             ),
           ),
@@ -58,29 +59,32 @@ ToggleSwitch(
 
 ToggleSwitch(
   checked: checked,
-  onPressed: disabled ? null : (v) => setState(() => checked = v),
+  onChanged: disabled ? null : (v) => setState(() => checked = v),
   content: Text(checked ? 'Working' : 'Do work'),
 )''',
-          child: Row(children: [
-            InfoLabel(
-              label: 'Header',
-              child: ToggleSwitch(
-                checked: secondValue,
-                onChanged:
-                    disabled ? null : (v) => setState(() => secondValue = v),
-                content: Text(secondValue ? 'Working' : 'Do work'),
-              ),
-            ),
-            if (secondValue)
-              const Padding(
-                padding: EdgeInsetsDirectional.only(start: 24.0),
-                child: SizedBox(
-                  height: 30.0,
-                  width: 30.0,
-                  child: ProgressRing(),
+          child: Row(
+            children: [
+              InfoLabel(
+                label: 'Header',
+                child: ToggleSwitch(
+                  checked: secondValue,
+                  onChanged: disabled
+                      ? null
+                      : (v) => setState(() => secondValue = v),
+                  content: Text(secondValue ? 'Working' : 'Do work'),
                 ),
-              )
-          ]),
+              ),
+              if (secondValue)
+                const Padding(
+                  padding: EdgeInsetsDirectional.only(start: 24.0),
+                  child: SizedBox(
+                    height: 30.0,
+                    width: 30.0,
+                    child: ProgressRing(),
+                  ),
+                ),
+            ],
+          ),
         ),
       ],
     );
