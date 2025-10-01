@@ -1,9 +1,32 @@
-## [next]
+## 4.13.0
 
 - fix: NavigationView transition when in top ([#1220](https://github.com/bdlukaa/fluent_ui/pull/1220))
 - feat: Added `CalendarView` widget ([#1232](https://github.com/bdlukaa/fluent_ui/pull/1232) thanks to [@asmitta-01](https://github.com/Asmitta-01), [#236](https://github.com/bdlukaa/fluent_ui/issues/236))
 - feat: Added `CalendarDatePicker` ([#236](https://github.com/bdlukaa/fluent_ui/issues/236))
 - feat: Added `WindowsIcon` and `WindowsIcons` ([#1237](https://github.com/bdlukaa/fluent_ui/pull/1237))
+- fix: `Slider` label on drag ([#1248](https://github.com/bdlukaa/fluent_ui/issues/1248))
+- fix: `closeAfterClick` at the item level is no longer ignored on `DropDownButton` ([#1245](https://github.com/bdlukaa/fluent_ui/issues/1245))
+- **MINOR BREAKING** feat: `FlyoutController.close` can now return a value to the previous route. ([#1246](https://github.com/bdlukaa/fluent_ui/issues/1246))
+  Before:
+
+  ```dart
+  // normally close the flyout
+  flyoutController.close();
+
+  // forcefully close the flyout
+  flyoutController.close(true);
+  ```
+
+  After:
+
+  ```dart
+  // normally close the flyout
+  final result = flyoutController.close<String>('my result');
+
+  // forcefully close the flyout
+  flyoutController.forceClose();
+  ```
+- fix: Check if `AutoSuggestBox` is mounted before dismissing overlay ([#1228](https://github.com/bdlukaa/fluent_ui/issues/1228))
 
 ## 4.12.0
 
